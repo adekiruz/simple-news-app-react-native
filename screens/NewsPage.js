@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
+import { connect } from 'react-redux';
 
 class NewsPage extends React.Component {
 
@@ -66,5 +67,10 @@ const styles = StyleSheet.create({
   }
 });
 
+const mapStateToProps = (state) => {
+	return {
+		redux: state
+	};
+};
 
-export default NewsPage;
+export default connect(mapStateToProps)(NewsPage);

@@ -1,8 +1,11 @@
 import React from 'react';
 import { StyleSheet, Text, View, FlatList, Image } from 'react-native';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { getArticles } from '../store/actions';
 
-export default class App extends React.Component {
+class Home extends React.Component {
 
   static navigationOptions = {
     title: 'Berita Hot',
@@ -26,9 +29,10 @@ export default class App extends React.Component {
   componentDidMount() {
     axios.get('http://newsapi.org/v2/top-headlines?country=id&apiKey=61e3b1a655ce4bf3ac9ed511a2e9a2b7')
     .then((resp) => {
-      this.setState({
-        news: resp.data.articles,
-      });
+      // this.setState({
+      //   news: resp.data.articles,
+      // });
+      this.props.getArticles(resp.data.articles);
     })
     .catch((resp) => {
       console.log('catch componentDidMount:', resp);
@@ -40,7 +44,7 @@ export default class App extends React.Component {
       <View style={styles.container}>
         <Text style={{ fontSize: 25, fontWeight: 'bold', marginBottom: 7 }}> Top 20 Berita Hot </Text>
         <FlatList 
-          data={this.state.news} 
+          data={this.props.redux.articles} 
           keyExtractor={(item) => item.publishedAt}
           renderItem={({item}) => {
             return (
@@ -97,3 +101,13 @@ const styles = StyleSheet.create({
     padding: 8,
   }
 });
+
+const mapStateToProps = (state) => {
+  return {
+    redux: state
+  };
+};
+
+const mapDispatchToProps = (dispatch) => bindActionCreators({getArticles}, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
